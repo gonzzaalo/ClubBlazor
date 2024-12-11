@@ -12,5 +12,4 @@ obj/
 # Logs
 *.log
 
-# Config
-appsettings*.json
+
