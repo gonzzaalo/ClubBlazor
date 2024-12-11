@@ -1,0 +1,196 @@
+﻿@page "/deportes"
+
+@inject GenericService<Deporte> deporteService
+
+<div class="background-container">
+    <img src="/Imagenes/deportes.jpg" alt="Background" class="background-img">
+</div>
+
+<div class="forms-container">
+<h3>Gestión de Deportes</h3>
+
+@if (deportes == null)
+{
+    <p>Cargando deportes...</p>
+}
+else
+{
+    <!-- Botón Nuevo Deporte con el estilo verde suave -->
+    <NavLink class="nav-link btn btn-custom-green mb-3 d-inline-block" href="nuevodeporte">Nuevo Deporte</NavLink>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Hora</th>
+                <th>Profesor</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var deporte in deportes)
+            {
+                <tr>
+                        <td td class="bold-cell">@deporte.Id</td>
+                        <td td class="bold-cell">@deporte.Nombre</td>
+                        <td td class="bold-cell">@deporte.Descripcion</td>
+                        <td td class="bold-cell">@deporte.Hora</td>
+                        <td td class="bold-cell">@(deporte.Profesor != null ? $"{deporte.Profesor.Nombre} {deporte.Profesor.Apellido}" : "Sin asignar")</td>
+
+                    <td>
+                        <!-- Botón Editar con estilo azul -->
+                        <NavLink class="nav-link btn btn-primary d-inline-block" href="@($"editardeporte?idDeporte={deporte.Id}")">Editar</NavLink>
+
+                        <!-- Botón Eliminar con estilo rojo -->
+                        <button title="Eliminar" class="btn btn-danger d-inline-block" @onclick="@(() => ConfirmarEliminar(deporte))">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (deporteAEliminar != null)
+{
+    <div class="alert alert-warning">
+        <strong>Advertencia:</strong> ¿Estás seguro de que deseas eliminar el deporte @deporteAEliminar.Nombre?
+        <button class="btn btn-danger" @onclick="EliminarDeporte">Sí</button>
+        <button class="btn btn-secondary" @onclick="CancelarEliminar">Cancelar</button>
+    </div>
+}
+</div>
+
+@code {
+    private List<Deporte>? deportes;
+    private Deporte? deporteAEliminar;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarDeportes();
+    }
+
+    private async Task CargarDeportes()
+    {
+        deportes = await deporteService.GetAllAsync();
+    }
+
+    private void ConfirmarEliminar(Deporte deporte)
+    {
+        deporteAEliminar = deporte;
+    }
+
+    private async Task EliminarDeporte()
+    {
+        if (deporteAEliminar != null)
+        {
+            // Eliminar el deporte usando el servicio
+            await deporteService.DeleteAsync(deporteAEliminar.Id);
+            // Limpiar la variable deporteAEliminar
+            deporteAEliminar = null;
+            await CargarDeportes();
+        }
+    }
+
+    private void CancelarEliminar()
+    {
+        deporteAEliminar = null;
+    }
+}
+
+
+      @*   @* @page "/deportes"
+
+@inject GenericService<Deporte> deporteService 
+
+
+<h3>Deportes</h3>
+
+@if (deportes == null)
+{
+    <p>Cargando deportes...</p>
+}
+else
+{
+    <NavLink class="nav-link" href="nuevodeporte"> Nuevo Deporte</NavLink>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Hora</th>
+                <th>Profesor</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var deporte in deportes)
+            {
+                <tr>
+                    <td>@deporte.Id</td>
+                    <td>@deporte.Nombre</td>
+                    <td>@deporte.Descripcion</td>
+                    <td>@deporte.Hora</td>
+                    <td>@(deporte.Profesor != null ? $"{deporte.Profesor.Nombre} {deporte.Profesor.Apellido}" : "Sin asignar")</td>
+
+                    <td>
+                        <NavLink class="nav-link" href="@($"editardeporte?idDeporte={deporte.Id}")">Editar</NavLink>
+                        <button title="Eliminar" class="btn btn-danger" @onclick="@(() => ConfirmarEliminar(deporte))">Eliminar</button>
+                    </td>
+
+                    </tr>
+                    }
+        </tbody>
+    </table>
+
+}
+
+@if (deporteAEliminar != null)
+{
+    <div class="alert alert-warning">
+        <strong>Advertencia:</strong> ¿Estás seguro de que deseas eliminar el deporte @deporteAEliminar.Nombre?
+        <button class="btn btn-danger" @onclick="EliminarDeporte">Sí</button>
+        <button class="btn btn-secondary" @onclick="CancelarEliminar">Cancelar</button>
+    </div>
+}
+
+
+@code {
+    private List<Deporte>? deportes;
+    private Deporte? deporteAEliminar;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarDeportes();
+    }
+
+    private async Task CargarDeportes()
+    {
+        deportes = await deporteService.GetAllAsync();
+    }
+
+    private void ConfirmarEliminar(Deporte deporte)
+    {
+        deporteAEliminar = deporte;
+    }
+
+    private async Task EliminarDeporte()
+    {
+        if (deporteAEliminar != null)
+        {
+            // Eliminar el deporte usando el servicio
+            await deporteService.DeleteAsync(deporteAEliminar.Id); 
+            // Limpiar la variable deporteAEliminar
+            deporteAEliminar = null;
+            await CargarDeportes();
+        }
+    }
+
+    private void CancelarEliminar()
+    {
+        deporteAEliminar = null;
+    }
+
+} *@

@@ -1,0 +1,73 @@
+﻿@page "/editarprofesor"
+@using ClubBlazor.Interfaces
+@using ClubBlazor.Models
+@inject GenericService<Profesor> ProfesorService
+@inject NavigationManager navigationManager
+
+<div class="background-container">
+    <img src="/Imagenes/profes.jpg" alt="Background" class="background-img">
+</div>
+
+<h3>Editar Profesor</h3>
+
+@if (profesor == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <div class="form-container">
+    <EditForm Model="profesor" OnValidSubmit="ActualizarProfesor">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+       
+        <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <InputText class="form-control" @bind-Value="profesor.Nombre" />
+        </div>
+
+        
+        <div class="mb-3">
+            <label class="form-label">Apellido</label>
+            <InputText class="form-control" @bind-Value="profesor.Apellido" />
+        </div>
+
+       
+        <div class="mb-3">
+            <label class="form-label">Teléfono</label>
+            <InputText class="form-control" @bind-Value="profesor.Telefono" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+    </EditForm>
+    </div>
+}
+
+@code {
+    [SupplyParameterFromQuery]
+    [Parameter]
+    public int IdProfesor { get; set; }  // Obtiene el ID de la URL
+
+    public Profesor? profesor { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        profesor = await ProfesorService.GetByIdAsync(IdProfesor); // Obtener el profesor por el ID
+    }
+
+    private async Task ActualizarProfesor()
+    {
+        if (profesor != null)
+        {
+            await ProfesorService.UpdateAsync(profesor); // Llamada al servicio para actualizar el profesor
+            navigationManager.NavigateTo("/profesores"); // Redirige a la lista de profesores
+        }
+    }
+
+    private void Cancelar()
+    {
+        navigationManager.NavigateTo("/profesores"); // Redirige a la lista de profesores
+    }
+}

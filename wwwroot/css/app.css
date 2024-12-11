@@ -1,0 +1,290 @@
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+h1:focus {
+    outline: none;
+}
+
+a, .btn-link {
+    color: #0071c1;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.content {
+    padding-top: 1.1rem;
+}
+
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+.invalid {
+    outline: 1px solid red;
+}
+
+.validation-message {
+    color: red;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+.blazor-error-boundary {
+    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTYiIGhlaWdodD0iNDkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIG92ZXJmbG93PSJoaWRkZW4iPjxkZWZzPjxjbGlwUGF0aCBpZD0iY2xpcDAiPjxyZWN0IHg9IjIzNSIgeT0iNTEiIHdpZHRoPSI1NiIgaGVpZ2h0PSI0OSIvPjwvY2xpcFBhdGg+PC9kZWZzPjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMCkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMzUgLTUxKSI+PHBhdGggZD0iTTI2My41MDYgNTFDMjY0LjcxNyA1MSAyNjUuODEzIDUxLjQ4MzcgMjY2LjYwNiA1Mi4yNjU4TDI2Ny4wNTIgNTIuNzk4NyAyNjcuNTM5IDUzLjYyODMgMjkwLjE4NSA5Mi4xODMxIDI5MC41NDUgOTIuNzk1IDI5MC42NTYgOTIuOTk2QzI5MC44NzcgOTMuNTEzIDI5MSA5NC4wODE1IDI5MSA5NC42NzgyIDI5MSA5Ny4wNjUxIDI4OS4wMzggOTkgMjg2LjYxNyA5OUwyNDAuMzgzIDk5QzIzNy45NjMgOTkgMjM2IDk3LjA2NTEgMjM2IDk0LjY3ODIgMjM2IDk0LjM3OTkgMjM2LjAzMSA5NC4wODg2IDIzNi4wODkgOTMuODA3MkwyMzYuMzM4IDkzLjAxNjIgMjM2Ljg1OCA5Mi4xMzE0IDI1OS40NzMgNTMuNjI5NCAyNTkuOTYxIDUyLjc5ODUgMjYwLjQwNyA1Mi4yNjU4QzI2MS4yIDUxLjQ4MzcgMjYyLjI5NiA1MSAyNjMuNTA2IDUxWk0yNjMuNTg2IDY2LjAxODNDMjYwLjczNyA2Ni4wMTgzIDI1OS4zMTMgNjcuMTI0NSAyNTkuMzEzIDY5LjMzNyAyNTkuMzEzIDY5LjYxMDIgMjU5LjMzMiA2OS44NjA4IDI1OS4zNzEgNzAuMDg4N0wyNjEuNzk1IDg0LjAxNjEgMjY1LjM4IDg0LjAxNjEgMjY3LjgyMSA2OS43NDc1QzI2Ny44NiA2OS43MzA5IDI2Ny44NzkgNjkuNTg3NyAyNjcuODc5IDY5LjMxNzkgMjY3Ljg3OSA2Ny4xMTgyIDI2Ni40NDggNjYuMDE4MyAyNjMuNTg2IDY2LjAxODNaTTI2My41NzYgODYuMDU0N0MyNjEuMDQ5IDg2LjA1NDcgMjU5Ljc4NiA4Ny4zMDA1IDI1OS43ODYgODkuNzkyMSAyNTkuNzg2IDkyLjI4MzcgMjYxLjA0OSA5My41Mjk1IDI2My41NzYgOTMuNTI5NSAyNjYuMTE2IDkzLjUyOTUgMjY3LjM4NyA5Mi4yODM3IDI2Ny4zODcgODkuNzkyMSAyNjcuMzg3IDg3LjMwMDUgMjY2LjExNiA4Ni4wNTQ3IDI2My41NzYgODYuMDU0N1oiIGZpbGw9IiNGRkU1MDAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvZz48L3N2Zz4=) no-repeat 1rem/1.8rem, #b32121;
+    padding: 1rem 1rem 1rem 3.7rem;
+    color: white;
+}
+
+    .blazor-error-boundary::after {
+        content: "An error has occurred."
+    }
+
+.loading-progress {
+    position: relative;
+    display: block;
+    width: 8rem;
+    height: 8rem;
+    margin: 20vh auto 1rem auto;
+}
+
+    .loading-progress circle {
+        fill: none;
+        stroke: #e0e0e0;
+        stroke-width: 0.6rem;
+        transform-origin: 50% 50%;
+        transform: rotate(-90deg);
+    }
+
+        .loading-progress circle:last-child {
+            stroke: #1b6ec2;
+            stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
+            transition: stroke-dasharray 0.05s ease-in-out;
+        }
+
+.loading-progress-text {
+    position: absolute;
+    text-align: center;
+    font-weight: bold;
+    inset: calc(20vh + 3.25rem) 0 auto 0.2rem;
+}
+
+    .loading-progress-text:after {
+        content: var(--blazor-load-percentage-text, "Loading");
+    }
+
+code {
+    color: #c02d76;
+}
+
+/* Estilo para el botón "Nuevo Deporte" (verde suave) */
+.btn-custom-green {
+    background-color: #4CAF50; /* Verde suave */
+    border-color: #4CAF50; /* Borde verde suave */
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+    .btn-custom-green:hover {
+        background-color: #66bb6a; /* Verde ligeramente más claro para el hover */
+        border-color: #66bb6a; /* Borde hover verde claro */
+    }
+
+/* Estilo para el botón "Editar" (azul) */
+.btn-primary {
+    background-color: #007bff; /* Azul */
+    border-color: #007bff; /* Borde azul */
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3; /* Azul más oscuro para el hover */
+        border-color: #0056b3; /* Borde hover azul más oscuro */
+    }
+
+/* Estilo para el botón "Eliminar" (rojo) */
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+    .btn-danger:hover {
+        background-color: #c82333; /* Rojo más oscuro para el hover */
+        border-color: #c82333;
+    }
+
+.content-area {
+    margin-top: 60px; /* Ajusta el valor según la altura de tu barra */
+    padding: 20px;
+}
+.page-container {
+    position: fixed; /* Asegura que el fondo permanezca fijo en la pantalla */
+    top: 0;
+    left: 0;
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+    width: 100vw; /* Ocupa toda la anchura de la ventana */
+    background: url('/Imagenes/fondo.webp') no-repeat center center; /* Centra la imagen horizontal y verticalmente */
+    background-attachment: fixed; /* Fija la imagen al fondo */
+    background-size: cover; /* Asegura que la imagen cubra todo el área sin deformarse */
+    z-index: -1; /* Coloca la imagen detrás de cualquier contenido */
+}
+
+.custom-navbar {
+    border-bottom: 2px solid #28a745; /* Borde verde */
+}
+
+.form-container {
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    padding: 20px !important;
+    border-radius: 8px !important;
+    max-width: 400px !important;
+    margin: 0 auto !important;
+    color: white !important;
+}
+
+
+h3 {
+    text-align: center;
+    color: black; /* Color de texto blanco */
+    margin-bottom: 20px; 
+}
+
+.background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw; /* Ocupa todo el ancho */
+    height: 100vh; /* Limita la altura al tamaño de la pantalla */
+    overflow: hidden; /* Oculta cualquier exceso */
+    z-index: -1; /* Coloca detrás del contenido */
+    background-color: black; /* Fondo negro */
+}
+
+.background-img {
+    width: 100%; /* Ajusta la anchura para cubrir todo */
+    height: 100%; /* Ajusta la altura para cubrir todo */
+    object-fit: contain; /* Asegura que toda la imagen sea visible sin deformarse */
+}
+
+.content-area {
+    text-align: center;
+    color: black; /* Color de texto blanco */
+    margin-bottom: 20px;
+}
+
+
+/* Estilo para la barra de navegación superior (navbar) */
+.navbar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Asegura que los elementos estén alineados a la izquierda */
+}
+
+.navbar .nav-link {
+    padding-left: 20px; /* Espaciado a la izquierda */
+    padding-right: 20px; /* Espaciado a la derecha */
+    font-size: 16px;
+}
+
+/* Estilo para la barra lateral */
+.nav-scrollable {
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.nav-item {
+    padding: 8px 0; /* Espaciado entre los elementos */
+}
+
+.nav-link {
+    padding: 10px 15px;
+    font-size: 16px;
+}
+
+    /* Asegura que los enlaces se alineen a la izquierda */
+    .nav-link.active {
+        color: #fff;
+        background-color: #28a745; /* Fondo verde para el enlace activo */
+        border-radius: 4px;
+        font-weight: bold; /* Texto en negrita */
+    }
+
+.navbar .navbar-expand-lg .container-fluid {
+    padding-left: 0; /* Asegura que los elementos no estén centrados por el padding de Bootstrap */
+    padding-right: 0; /* Evita el centrado por el padding */
+}
+
+/* Evita que el contenedor flex se aplique al nav-item */
+.navbar .nav-item {
+    display: inline-block;
+}
+/* Asegura que el botón "Nueva Cuota" esté alineado a la izquierda */
+.nav-link.btn-custom-green {
+    text-align: left !important; /* Alinea el texto a la izquierda */
+    display: inline-block !important; /* Evita que el botón ocupe todo el espacio */
+    margin-left: 0 !important; /* Elimina cualquier margen que lo desplace hacia el centro */
+}
+
+/* Si necesitas personalizar el espacio alrededor del botón */
+.mb-3 {
+    margin-bottom: 1rem;
+}
+
+.container-nuevo {
+    text-align: left; /* Asegura que el contenido dentro del contenedor esté alineado a la izquierda */
+    width: 100%;
+}
+/* Asegura que el botón "Editar" esté alineado a la izquierda */
+.nav-link.btn-primary {
+    text-align: left !important; /* Alinea el texto a la izquierda */
+    display: inline-block !important; /* Evita que el botón ocupe todo el espacio */
+    margin-left: 0 !important; /* Elimina cualquier margen que lo desplace hacia el centro */
+}
+
+.forms-container {
+    background-color: rgba(255, 255, 255, 0.7) !important; /* Fondo blanco con opacidad del 70% */
+    padding: 20px !important;
+    border-radius: 8px !important;
+    width: 100% !important; /* Ancho del 100% */
+    margin: 0 auto !important; /* Centrado automático */
+    color: black !important; /* Color de texto negro para mejor contraste */
+    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho total */
+}
+
+.bold-cell {
+    font-weight: bold;
+}

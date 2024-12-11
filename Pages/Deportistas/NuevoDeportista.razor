@@ -1,0 +1,97 @@
+﻿@page "/nuevodeportista"
+
+@inject GenericService<Deportista> DeportistaService
+@inject GenericService<Deporte> DeporteService
+@inject GenericService<Cuota> CuotaService
+@inject NavigationManager NavigationManager
+
+<div class="background-container">
+    <img src="/Imagenes/deportistas.jpg" alt="Background" class="background-img">
+</div>
+
+<h3>Nuevo Deportista</h3>
+
+<div class="form-container">
+<EditForm Model="@nuevoDeportista" OnValidSubmit="GuardarDeportista">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre</label>
+        <InputText id="nombre" class="form-control" @bind-Value="nuevoDeportista.Nombre" />
+    </div>
+
+    <div class="mb-3">
+        <label for="apellido" class="form-label">Apellido</label>
+        <InputText id="apellido" class="form-control" @bind-Value="nuevoDeportista.Apellido" />
+    </div>
+
+    <div class="mb-3">
+        <label for="telefono" class="form-label">Teléfono</label>
+        <InputText id="telefono" class="form-control" @bind-Value="nuevoDeportista.Telefono" />
+    </div>
+
+    <div class="mb-3">
+        <label for="direccion" class="form-label">Dirección</label>
+        <InputText id="direccion" class="form-control" @bind-Value="nuevoDeportista.Direccion" />
+    </div>
+
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <InputText id="email" class="form-control" @bind-Value="nuevoDeportista.Email" />
+    </div>
+
+    <div class="mb-3">
+        <label for="deporte" class="form-label">Deporte</label>
+        <InputSelect id="deporte" class="form-control" @bind-Value="nuevoDeportista.DeporteId">
+            <option value="">Seleccione un deporte</option>
+            @foreach (var deporte in deportes)
+            {
+                <option value="@deporte.Id">@deporte.Nombre</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label for="cuota" class="form-label">Cuota</label>
+        <InputSelect id="cuota" class="form-control" @bind-Value="nuevoDeportista.CuotaId">
+            <option value="">Seleccione una cuota</option>
+            @foreach (var cuota in cuotas)
+            {
+                <option value="@cuota.Id">@cuota.Nombre</option>
+            }
+        </InputSelect>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar Deportista</button>
+</EditForm>
+</div>
+
+<button class="btn btn-secondary mt-2" @onclick="Cancelar">Cancelar</button>
+
+@code {
+    private Deportista nuevoDeportista = new Deportista();
+    private List<Deporte> deportes = new List<Deporte>();
+    private List<Cuota> cuotas = new List<Cuota>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar deportes y cuotas
+        deportes = await DeporteService.GetAllAsync();
+        cuotas = await CuotaService.GetAllAsync();
+    }
+
+    private async Task GuardarDeportista()
+    {
+        // Crear el deportista  
+        await DeportistaService.AddAsync(nuevoDeportista);
+        // Redirigir a la página de gestión de deportistas
+        NavigationManager.NavigateTo("/deportistas");
+    }
+
+    private void Cancelar()
+    {
+        // Redirigir a la página de gestión de deportistas sin guardar
+        NavigationManager.NavigateTo("/deportistas");
+    }
+}

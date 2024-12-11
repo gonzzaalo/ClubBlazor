@@ -1,0 +1,102 @@
+﻿@page "/socios"
+
+@inject GenericService<Socio> SocioService
+@inject NavigationManager NavigationManager
+
+<div class="background-container">
+    <img src="/Imagenes/socios.jpg" alt="Background" class="background-img">
+</div>
+
+<div class="forms-container">
+<h3>Gestión de Socios</h3>
+
+@if (socios == null)
+{
+    <p>Cargando Socios...</p>
+}
+else
+{
+    
+    <NavLink class="nav-link btn btn-custom-green mb-3 d-inline-block" href="/nuevosocio">Nuevo Socio</NavLink>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+                <th>Email</th>
+                <th>Cuota</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var socio in socios)
+            {
+                <tr>
+                        <td td class="bold-cell">@socio.Nombre</td>
+                        <td td class="bold-cell">@socio.Apellido</td>
+                        <td td class="bold-cell">@socio.Telefono</td>
+                        <td td class="bold-cell">@socio.Direccion</td>
+                        <td td class="bold-cell">@socio.Email</td>
+                        <td td class="bold-cell">@(socio.Cuota != null ? $"{socio.Cuota.Nombre}" : "Sin Asignar")</td>
+                        <td td class="bold-cell">
+                        
+                        <NavLink class="nav-link btn btn-primary d-inline-block" href="@($"/editarsocio?idSocio={socio.Id}")">Editar</NavLink>
+
+                       
+                        <button title="Eliminar" class="btn btn-danger d-inline-block" @onclick="@(() => ConfirmarEliminar(socio))">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (socioAEliminar != null)
+{
+    <div class="alert alert-warning">
+        <strong>Advertencia:</strong> ¿Estás seguro de que deseas eliminar al socio @socioAEliminar.Nombre @socioAEliminar.Apellido?
+        <button class="btn btn-danger" @onclick="EliminarSocio">Sí</button>
+        <button class="btn btn-secondary" @onclick="CancelarEliminar">Cancelar</button>
+    </div>
+}
+</div>
+
+@code {
+    private List<Socio>? socios;
+    private Socio? socioAEliminar;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarSocios();
+    }
+
+    private async Task CargarSocios()
+    {
+        socios = await SocioService.GetAllAsync();
+    }
+
+    private void ConfirmarEliminar(Socio socio)
+    {
+        socioAEliminar = socio;
+    }
+
+    private async Task EliminarSocio()
+    {
+        if (socioAEliminar != null)
+        {
+            // Eliminar al deportista usando el servicio
+            await SocioService.DeleteAsync(socioAEliminar.Id);
+            // Limpiar la variable deportistaAEliminar
+            socioAEliminar = null;
+            await CargarSocios();
+        }
+    }
+
+    private void CancelarEliminar()
+    {
+        socioAEliminar = null;
+    }
+}

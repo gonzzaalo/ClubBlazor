@@ -1,0 +1,96 @@
+﻿@page "/cuotas"
+
+@inject GenericService<Cuota> cuotaService
+
+<div class="background-container">
+    <img src="/Imagenes/cuotas.jpg" alt="Background" class="background-img">
+</div>
+
+<div class="forms-container">
+<h3>Gestión de Cuotas</h3>
+
+
+@if (cuotas == null)
+{
+    <p>Cargando cuotas...</p>
+}
+else
+{
+    <!-- Botón Nuevo Cuota alineado a la izquierda -->
+    <NavLink class="nav-link btn btn-custom-green mb-3 d-inline-block" href="nuevacuota">Nueva Cuota</NavLink>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Monto</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cuota in cuotas)
+            {
+                <tr>
+                        <td td class="bold-cell">@cuota.Nombre</td>
+                        <td td class="bold-cell">@cuota.Descripcion</td>
+                        <td td class="bold-cell">@($"$ {cuota.Monto:F2}")</td> <!-- Formato para peso argentino -->
+                    <td>
+                        <!-- Botón Editar alineado a la izquierda -->
+                        <NavLink class="nav-link btn btn-primary d-inline-block" href="@($"editarcuota?idCuota={cuota.Id}")">Editar</NavLink>
+
+                        <!-- Botón Eliminar -->
+                        <button title="Eliminar" class="btn btn-danger d-inline-block" @onclick="@(() => ConfirmarEliminar(cuota))">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (cuotaAEliminar != null)
+{
+    <div class="alert alert-warning">
+        <strong>Advertencia:</strong> ¿Estás seguro de que deseas eliminar la cuota @cuotaAEliminar.Nombre?
+        <button class="btn btn-danger" @onclick="EliminarCuota">Sí</button>
+        <button class="btn btn-secondary" @onclick="CancelarEliminar">Cancelar</button>
+    </div>
+}
+</div>
+
+@code {
+    private List<Cuota>? cuotas;
+    private Cuota? cuotaAEliminar;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarCuotas();
+    }
+
+    private async Task CargarCuotas()
+    {
+        cuotas = await cuotaService.GetAllAsync();
+    }
+
+    private void ConfirmarEliminar(Cuota cuota)
+    {
+        cuotaAEliminar = cuota;
+    }
+
+    private async Task EliminarCuota()
+    {
+        if (cuotaAEliminar != null)
+        {
+            // Eliminar la cuota usando el servicio
+            await cuotaService.DeleteAsync(cuotaAEliminar.Id);
+            // Limpiar la variable cuotaAEliminar
+            cuotaAEliminar = null;
+            await CargarCuotas();
+        }
+    }
+
+    private void CancelarEliminar()
+    {
+        cuotaAEliminar = null;
+    }
+}

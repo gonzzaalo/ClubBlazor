@@ -1,0 +1,111 @@
+﻿@page "/profesores"
+@inject GenericService<Profesor> ProfesorService
+@inject NavigationManager NavigationManager
+
+<div class="background-container">
+    <img src="/Imagenes/profes.jpg" alt="Background" class="background-img">
+</div>
+
+<div class="forms-container">
+<h3>Gestión de Profesores</h3>
+
+@if (profesores == null)
+{
+    <p>Cargando profesores...</p>
+}
+else
+{
+    <!-- Botón Nuevo Profesor -->
+    <NavLink class="nav-link btn btn-custom-green mb-3 d-inline-block" href="/nuevoprofesor">Nuevo Profesor</NavLink>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Teléfono</th>
+                <th>Deportes Asignados</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var profesor in profesores)
+            {
+                <tr>
+                        <td td class="bold-cell">@profesor.Nombre</td>
+                        <td td class="bold-cell">@profesor.Apellido</td>
+                        <td td class="bold-cell">@profesor.Telefono</td>
+                        <td td class="bold-cell">
+                        @if (profesor.Deportes != null && profesor.Deportes.Any())
+                        {
+                            @foreach (var deporte in profesor.Deportes)
+                            {
+                                <span>@deporte.Nombre</span>
+
+                                <br />
+                            }
+                        }
+                        else
+                        {
+                            <span>Sin Asignar</span>
+                        }
+                    </td>
+                    <td>
+                        <!-- Botón Editar -->
+                        <NavLink class="nav-link btn btn-primary d-inline-block" href="@($"/editarprofesor?idProfesor={profesor.Id}")">Editar</NavLink>
+
+                        <!-- Botón Eliminar -->
+                        <button title="Eliminar" class="btn btn-danger d-inline-block" @onclick="@(() => ConfirmarEliminar(profesor))">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (profesorAEliminar != null)
+{
+    <div class="alert alert-warning">
+        <strong>Advertencia:</strong> ¿Estás seguro de que deseas eliminar al profesor @profesorAEliminar.Nombre @profesorAEliminar.Apellido?
+        <button class="btn btn-danger" @onclick="EliminarProfesor">Sí</button>
+        <button class="btn btn-secondary" @onclick="CancelarEliminar">Cancelar</button>
+    </div>
+}
+</div>
+
+@code {
+    private List<Profesor>? profesores;
+    private Profesor? profesorAEliminar;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarProfesores();
+    }
+
+    private async Task CargarProfesores()
+    {
+        profesores = await ProfesorService.GetAllAsync();
+    }
+
+    private void ConfirmarEliminar(Profesor profesor)
+    {
+        profesorAEliminar = profesor;
+    }
+
+    private async Task EliminarProfesor()
+    {
+        if (profesorAEliminar != null)
+        {
+            // Eliminar al profesor usando el servicio
+            await ProfesorService.DeleteAsync(profesorAEliminar.Id);
+            // Limpiar la variable profesorAEliminar
+            profesorAEliminar = null;
+            await CargarProfesores();
+        }
+    }
+
+    private void CancelarEliminar()
+    {
+        profesorAEliminar = null;
+    }
+}

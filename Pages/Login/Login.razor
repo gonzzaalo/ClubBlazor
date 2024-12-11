@@ -1,0 +1,59 @@
+﻿@page "/login"
+@inject FirebaseAuthService AuthService
+
+
+<div class="background-container">
+    <img src="/Imagenes/Login.jpg" alt="Background" class="background-img">
+</div>
+
+@if (!IsAuthenticated)
+{
+    <h3>Iniciar sesión</h3>
+    <EditForm Model="usuario" OnValidSubmit="IniciarSesion">
+        <DataAnnotationsValidator />
+        <div class="form-container">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <InputText class="form-control mb-2" type="text" @bind-Value="usuario.Email" />
+            </div>
+            <div class="form-group">
+                <label for="clave">Contraseña</label>
+                <InputText class="form-control mb-2" type="password" @bind-Value="usuario.Password" />
+            </div>
+            <ValidationSummary />
+            <button type="submit" class="btn btn-primary">Ingresar</button>
+        </div>
+    </EditForm>
+}
+else
+{
+    <button class="btn btn-primary" @onclick="CerrarSesion">Cerrar sesión</button>
+}
+
+@code {
+    Usuario usuario { get; set; } = new Usuario();
+    bool IsAuthenticated { get; set; } = false;
+
+    protected async override Task OnInitializedAsync()
+    {
+        IsAuthenticated = await AuthService.IsUserAuthenticated();
+    }
+
+
+    private async Task IniciarSesion()
+    {
+        await AuthService.SignInWithEmailPassword(usuario.Email, usuario.Password);    
+        IsAuthenticated = await AuthService.IsUserAuthenticated();
+        StateHasChanged();
+    }
+
+    private async Task CerrarSesion()
+    {
+        await AuthService.SignOut();
+        IsAuthenticated = await AuthService.IsUserAuthenticated();
+        StateHasChanged();
+    }
+}
+   
+ 
+

@@ -1,0 +1,94 @@
+﻿@inherits LayoutComponentBase
+@inject FirebaseAuthService AuthService
+
+<!-- Barra superior fija -->
+<div class="navbar navbar-dark navbar-expand-lg bg-dark fixed-top custom-navbar">
+    <div class="container-fluid">
+        @if (IsAuthenticated)
+        {
+            <NavLink class="nav-item nav-link text-white" href="/" activeClass="active">
+                Home
+            </NavLink>
+            <NavLink class="nav-item nav-link text-white" href="socios" activeClass="active">
+                Socios
+            </NavLink>
+            <NavLink class="nav-item nav-link text-white" href="deportistas" activeClass="active">
+                Deportistas
+            </NavLink>
+            <NavLink class="nav-item nav-link text-white" href="profesores" activeClass="active">
+                Profesores
+            </NavLink>
+            <NavLink class="nav-item nav-link text-white" href="deportes" activeClass="active">
+                Deportes
+            </NavLink>
+            <NavLink class="nav-item nav-link text-white" href="cuotas" activeClass="active">
+                Cuotas
+            </NavLink>
+        }
+        <NavLink class="nav-item nav-link text-white" href="login" activeClass="active">
+            @textoMenuLogin
+        </NavLink>
+    </div>
+</div>
+
+
+@code {
+    private bool collapseNavMenu = true;
+
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private bool IsAuthenticated;
+
+    private string textoMenuLogin => IsAuthenticated ? "Cerrar sesión" : "Iniciar sesión";
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        IsAuthenticated = await AuthService.IsUserAuthenticated();
+        AuthService.OnChangeLogin += ChequeoEstadoLogin;
+    }
+
+    public void Dispose()
+    {
+        AuthService.OnChangeLogin -= ChequeoEstadoLogin;
+    }
+
+    public async void ChequeoEstadoLogin()
+    {
+        IsAuthenticated = await AuthService.IsUserAuthenticated();
+        StateHasChanged();
+    }
+}
+
+
+<!-- Contenido principal con margen superior -->
+<div class="content-area mt-5">
+    <article class="content px-4">
+        @Body
+    </article>
+</div>
+
+
+@* @inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+ *@

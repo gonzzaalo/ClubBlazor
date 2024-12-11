@@ -1,0 +1,96 @@
+﻿@page "/editardeporte"
+@using ClubBlazor.Interfaces
+@using ClubBlazor.Models
+@inject GenericService<Deporte> DeporteService
+@inject GenericService<Profesor> ProfesorService
+@inject NavigationManager navigationManager
+
+<div class="background-container">
+    <img src="/Imagenes/deportes.jpg" alt="Background" class="background-img">
+</div>
+
+<h3>Editar Deporte</h3>
+
+@if (deporte == null || profesores == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <div class="form-container">
+    <EditForm Model="deporte" OnValidSubmit="ActualizarDeporte">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <InputText class="form-control" @bind-Value="deporte.Nombre" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <InputText class="form-control" @bind-Value="deporte.Descripcion" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Hora</label>
+            <InputText class="form-control" @bind-Value="horaString" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Profesor</label>
+            <InputSelect class="form-control" @bind-Value="deporte.ProfesorId">
+                <option value="">Selecciona un profesor</option>
+                @foreach (var profesor in profesores)
+                {
+                    <option value="@profesor.Id">@profesor.Nombre @profesor.Apellido</option>
+                }
+            </InputSelect>
+        </div>
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+
+    </EditForm>
+    </div>
+}
+
+@code {
+    [SupplyParameterFromQuery]
+    [Parameter] 
+    public int IdDeporte { get; set; }  // Obtiene el ID de la URL
+    public Deporte? deporte { get; set; }
+    public List<Profesor>? profesores { get; set; }
+    private string horaString = "00:00"; // Valor inicial de la hora
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar el deporte y los profesores desde el servicio
+        profesores = await ProfesorService.GetAllAsync() ?? new List<Profesor>();
+        deporte = await DeporteService.GetByIdAsync(IdDeporte); // Obtener el deporte por el ID
+
+        if (deporte != null)
+        {
+            horaString = deporte.Hora.ToString(@"hh\:mm"); // Convertir la hora en formato string
+        }
+    }
+
+    private async Task ActualizarDeporte()
+    {
+        if (TimeSpan.TryParse(horaString, out var hora))
+        {
+            deporte.Hora = hora;
+        }
+        else
+        {
+            Console.WriteLine("La hora ingresada no es válida.");
+            return;
+        }
+
+        if (deporte != null)
+        {
+            await DeporteService.UpdateAsync(deporte);
+            navigationManager.NavigateTo("/deportes");
+        }
+    }
+
+    private void Cancelar()
+    {
+        navigationManager.NavigateTo("/deportes");
+    }
+}

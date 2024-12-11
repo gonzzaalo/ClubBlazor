@@ -1,0 +1,63 @@
+﻿@page "/nuevacuota"
+
+@inject NavigationManager Navigation
+@inject GenericService<Cuota> cuotaService
+
+<div class="background-container">
+    <img src="/Imagenes/cuotas.jpg" alt="Background" class="background-img">
+</div>
+
+<h3>Nueva Cuota</h3>
+
+<div class="form-container">
+    <EditForm Model="nuevaCuota" OnValidSubmit="GuardarCuota">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <!-- Nombre -->
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <InputText id="nombre" class="form-control" @bind-Value="nuevaCuota.Nombre" />
+        </div>
+
+        <!-- Descripción -->
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <InputTextArea id="descripcion" class="form-control" @bind-Value="nuevaCuota.Descripcion" />
+        </div>
+
+        <!-- Monto -->
+        <div class="mb-3">
+            <label for="monto" class="form-label">Monto</label>
+            <InputNumber id="monto" class="form-control" @bind-Value="nuevaCuota.Monto" />
+        </div>
+
+        <!-- Botones -->
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    private Cuota nuevaCuota = new Cuota();
+
+    private async Task GuardarCuota()
+    {
+        try
+        {
+            await cuotaService.AddAsync(nuevaCuota); // Crear nueva cuota usando el servicio
+            Navigation.NavigateTo("/cuotas"); // Redirigir a la lista de cuotas
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al guardar la cuota: {ex.Message}");
+        }
+    }
+
+    private void Cancelar()
+    {
+        Navigation.NavigateTo("/cuotas"); // Redirigir a la lista de cuotas
+    }
+}

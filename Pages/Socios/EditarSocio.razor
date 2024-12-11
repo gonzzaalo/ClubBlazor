@@ -1,0 +1,94 @@
+﻿@page "/editarsocio"
+@using ClubBlazor.Interfaces
+@using ClubBlazor.Models
+@inject GenericService<Socio> SocioService
+@inject GenericService<Cuota> CuotaService
+@inject NavigationManager NavigationManager
+
+<div class="background-container">
+    <img src="/Imagenes/socios.jpg" alt="Background" class="background-img">
+</div>
+
+<h3>Editar Socio</h3>
+
+@if (socio == null || cuotas == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <div class="form-container">
+    <EditForm Model="socio" OnValidSubmit="ActualizarSocio">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <InputText class="form-control" @bind-Value="socio.Nombre" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Apellido</label>
+            <InputText class="form-control" @bind-Value="socio.Apellido" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Teléfono</label>
+            <InputText class="form-control" @bind-Value="socio.Telefono" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Dirección</label>
+            <InputText class="form-control" @bind-Value="socio.Direccion" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <InputText class="form-control" @bind-Value="socio.Email" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Cuota</label>
+            <InputSelect class="form-control" @bind-Value="socio.CuotaId">
+                <option value="">Selecciona una cuota</option>
+                @foreach (var cuota in cuotas)
+                {
+                    <option value="@cuota.Id">@cuota.Nombre</option>
+                }
+            </InputSelect>
+        </div>
+
+        <button type="submit" class="btn btn-success">Actualizar Socio</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+    </EditForm>
+    </div>
+}
+
+@code {
+    [SupplyParameterFromQuery]
+    [Parameter] public int IdSocio { get; set; } // Obtiene el ID del socio desde la URL
+    private Socio socio = new Socio();
+    private List<Cuota> cuotas = new List<Cuota>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar las cuotas y el socio desde los servicios
+        cuotas = await CuotaService.GetAllAsync();
+        socio = await SocioService.GetByIdAsync(IdSocio);
+    }
+
+    private async Task ActualizarSocio()
+    {
+        if (socio != null)
+        {
+            // Actualizar el socio con el servicio
+            await SocioService.UpdateAsync(socio);
+            NavigationManager.NavigateTo("/socios"); // Redirigir a la lista de socios
+        }
+    }
+
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/socios"); // Redirigir a la lista de socios si se cancela
+    }
+}

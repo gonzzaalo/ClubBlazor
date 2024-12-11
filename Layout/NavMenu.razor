@@ -1,0 +1,250 @@
+﻿@inject FirebaseAuthService AuthService
+
+<div class="@(NavMenuCssClass) nav-scrollable">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All" activeClass="active">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link d-flex align-items-center" href="login" activeClass="active">
+                <span class="bi bi-person-fill" aria-hidden="true" style="margin-right: 6px;"></span> @textoMenuLogin
+            </NavLink>
+        </div>
+        @if (IsAuthenticated)
+        {
+            @* 
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="counter" activeClass="active">
+                    <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="weather" activeClass="active">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+                </NavLink>
+            </div> 
+            *@
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="socios" activeClass="active">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Socios
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="deportistas" activeClass="active">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Deportistas
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="profesores" activeClass="active">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Profesores
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="deportes" activeClass="active">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Deportes
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="cuotas" activeClass="active">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Cuotas
+                </NavLink>
+            </div>
+        }
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private bool IsAuthenticated;
+
+    private string textoMenuLogin => IsAuthenticated ? "Cerrar sesión" : "Iniciar sesión";
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        IsAuthenticated = await AuthService.IsUserAuthenticated();
+        AuthService.OnChangeLogin += ChequeoEstadoLogin;
+    }
+
+    public void Dispose()
+    {
+        AuthService.OnChangeLogin -= ChequeoEstadoLogin;
+    }
+
+    public async void ChequeoEstadoLogin()
+    {
+        IsAuthenticated = await AuthService.IsUserAuthenticated();
+        StateHasChanged();
+    }
+}
+
+
+
+
+
+@* @using ClubBlazor.Services.Login
+@inherits LayoutComponentBase
+@inject FirebaseAuthService AuthService
+
+<!-- Barra superior fija -->
+<div class="navbar navbar-dark navbar-expand-lg bg-dark fixed-top custom-navbar">
+    @if (IsAuthenticated)
+    {
+    <div class="container-fluid">
+        <NavLink class="nav-item nav-link text-white" href="/">
+            Home
+        </NavLink>
+        <NavLink class="nav-item nav-link text-white" href="socios">
+            Socios
+        </NavLink>
+        <NavLink class="nav-item nav-link text-white" href="deportistas">
+            Deportistas
+        </NavLink>
+        <NavLink class="nav-item nav-link text-white" href="profesores">
+            Profesores
+        </NavLink>
+        <NavLink class="nav-item nav-link text-white" href="deportes">
+            Deportes
+        </NavLink>
+        <NavLink class="nav-item nav-link text-white" href="cuotas">
+            Cuotas
+        </NavLink>
+        </div>
+     }
+        <NavLink class="nav-item nav-link text-white" href="login">
+            Iniciar Sesion
+        </NavLink>
+    
+</div>
+
+
+<!-- Contenido principal -->
+<div class="content-area mt-5">
+    <article class="content px-4">
+        @Body
+    </article>
+</div>
+
+
+@code {
+            Usuario usuario { get; set; } = new Usuario();
+
+    private bool collapseNavMenu = true;
+
+        private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+        private bool IsAuthenticated;
+
+        private string textoMenuLogin => IsAuthenticated ? "Cerrar sesión" : "Iniciar sesión";
+
+        private void ToggleNavMenu()
+        {
+            collapseNavMenu = !collapseNavMenu;
+        }
+
+        protected async override Task OnInitializedAsync()
+        {
+            IsAuthenticated = await AuthService.IsUserAuthenticated();
+            AuthService.OnChangeLogin += ChequeoEstadoLogin;
+        }
+
+        public void Dispose()
+        {
+            AuthService.OnChangeLogin -= ChequeoEstadoLogin;
+        }
+        public async void ChequeoEstadoLogin()
+        {
+            IsAuthenticated = await AuthService.IsUserAuthenticated();
+            StateHasChanged();
+
+        }
+        private async Task CerrarSesion()
+        {
+            await AuthService.SignOut();
+            usuario = new Usuario();
+            IsAuthenticated = await AuthService.IsUserAuthenticated();
+            StateHasChanged();
+        }
+
+
+
+} *@
+
+@* 
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">ClubBlazor</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="counter">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="weather">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="socios">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Socios
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="deportistas">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Deportistas
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="profesores">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Profesores
+            </NavLink>
+        </div>
+                <div class="nav-item px-3">
+            <NavLink class="nav-link" href="deportes">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Deportes
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="cuotas">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Cuotas
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}
+ *@
+
+

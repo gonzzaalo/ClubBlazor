@@ -1,0 +1,76 @@
+﻿@page "/editarcuota"
+@using ClubBlazor.Interfaces
+@using ClubBlazor.Models
+@inject GenericService<Cuota> CuotaService
+@inject NavigationManager navigationManager
+
+<div class="background-container">
+    <img src="/Imagenes/cuotas.jpg" alt="Background" class="background-img">
+</div>
+
+<h3>Editar Cuota</h3>
+
+@if (cuota == null)
+{
+    <p><em>Cargando datos...</em></p>
+}
+else
+{
+    <div class="form-container">
+    <EditForm Model="cuota" OnValidSubmit="ActualizarCuota">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <InputText class="form-control" @bind-Value="cuota.Nombre" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <InputText class="form-control" @bind-Value="cuota.Descripcion" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Monto</label>
+            <InputNumber class="form-control" @bind-Value="cuota.Monto" step="0.01" />
+        </div>
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+    </EditForm>
+    </div>
+}
+
+@code {
+    [SupplyParameterFromQuery]
+    [Parameter]
+    public int IdCuota { get; set; } // Obtiene el ID desde la URL
+    public Cuota? cuota { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar la cuota desde el servicio
+        cuota = await CuotaService.GetByIdAsync(IdCuota);
+
+        if (cuota != null)
+        {
+            // Limitar el monto a 2 decimales al inicializar
+            cuota.Monto = Math.Round(cuota.Monto, 2);
+        }
+        else
+        {
+            Console.WriteLine($"No se pudo cargar la cuota con ID: {IdCuota}");
+        }
+    }
+
+    private async Task ActualizarCuota()
+    {
+        if (cuota != null)
+        {
+            await CuotaService.UpdateAsync(cuota);
+            navigationManager.NavigateTo("/cuotas");
+        }
+    }
+
+    private void Cancelar()
+    {
+        navigationManager.NavigateTo("/cuotas");
+    }
+}

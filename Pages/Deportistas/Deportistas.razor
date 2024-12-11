@@ -1,0 +1,104 @@
+﻿@page "/deportistas"
+
+@inject GenericService<Deportista> DeportistaService
+@inject NavigationManager NavigationManager
+
+<div class="background-container">
+    <img src="/Imagenes/deportistas.jpg" alt="Background" class="background-img">
+</div>
+
+<div class="forms-container">
+<h3>Gestión de Deportistas</h3>
+
+@if (deportistas == null)
+{
+    <p>Cargando deportistas...</p>
+}
+else
+{
+    <!-- Botón Nuevo Deportista -->
+    <NavLink class="nav-link btn btn-custom-green mb-3 d-inline-block" href="/nuevodeportista">Nuevo Deportista</NavLink>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+                <th>Email</th>
+                <th>Deporte</th>
+                <th>Cuota</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var deportista in deportistas)
+            {
+                <tr>
+                        <td td class="bold-cell">@deportista.Nombre</td>
+                        <td td class="bold-cell">@deportista.Apellido</td>
+                        <td td class="bold-cell">@deportista.Telefono</td>
+                        <td td class="bold-cell">@deportista.Direccion</td>
+                        <td td class="bold-cell">@deportista.Email</td>
+                        <td td class="bold-cell">@(deportista.Deporte != null ? $"{deportista.Deporte.Nombre}" : "Sin Asignar")</td>
+                        <td td class="bold-cell">@(deportista.Cuota != null ? $"{deportista.Cuota.Nombre}" : "Sin Asignar")</td>
+                    <td>
+                        <!-- Botón Editar -->
+                        <NavLink class="nav-link btn btn-primary d-inline-block" href="@($"/editardeportista?idDeportista={deportista.Id}")">Editar</NavLink>
+
+                        <!-- Botón Eliminar -->
+                        <button title="Eliminar" class="btn btn-danger d-inline-block" @onclick="@(() => ConfirmarEliminar(deportista))">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (deportistaAEliminar != null)
+{
+    <div class="alert alert-warning">
+        <strong>Advertencia:</strong> ¿Estás seguro de que deseas eliminar al deportista @deportistaAEliminar.Nombre @deportistaAEliminar.Apellido?
+        <button class="btn btn-danger" @onclick="EliminarDeportista">Sí</button>
+        <button class="btn btn-secondary" @onclick="CancelarEliminar">Cancelar</button>
+    </div>
+}
+</div>
+
+@code {
+    private List<Deportista>? deportistas;
+    private Deportista? deportistaAEliminar;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarDeportistas();
+    }
+
+    private async Task CargarDeportistas()
+    {
+        deportistas = await DeportistaService.GetAllAsync();
+    }
+
+    private void ConfirmarEliminar(Deportista deportista)
+    {
+        deportistaAEliminar = deportista;
+    }
+
+    private async Task EliminarDeportista()
+    {
+        if (deportistaAEliminar != null)
+        {
+            // Eliminar al deportista usando el servicio
+            await DeportistaService.DeleteAsync(deportistaAEliminar.Id);
+            // Limpiar la variable deportistaAEliminar
+            deportistaAEliminar = null;
+            await CargarDeportistas();
+        }
+    }
+
+    private void CancelarEliminar()
+    {
+        deportistaAEliminar = null;
+    }
+}

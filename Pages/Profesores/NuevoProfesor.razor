@@ -1,0 +1,52 @@
+﻿@page "/nuevoprofesor"
+
+@inject GenericService<Profesor> ProfesorService
+@inject NavigationManager NavigationManager
+
+<div class="background-container">
+    <img src="/Imagenes/profes.jpg" alt="Background" class="background-img">
+</div>
+
+<h3>NuevoProfesor</h3>
+<div class="form-container">
+<EditForm Model="@nuevoProfesor" OnValidSubmit="GuardarProfesor">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre</label>
+        <InputText id="nombre" class="form-control" @bind-Value="nuevoProfesor.Nombre" />
+    </div>
+
+    <div class="mb-3">
+        <label for="apellido" class="form-label">Apellido</label>
+        <InputText id="apellido" class="form-control" @bind-Value="nuevoProfesor.Apellido" />
+    </div>
+
+    <div class="mb-3">
+        <label for="telefono" class="form-label">Teléfono</label>
+        <InputText id="telefono" class="form-control" @bind-Value="nuevoProfesor.Telefono" />
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar Profesor</button>
+</EditForm>
+</div>
+
+<button class="btn btn-secondary mt-2" @onclick="Cancelar">Cancelar</button>
+
+@code {
+    Profesor nuevoProfesor = new Profesor();
+
+
+    private async Task GuardarProfesor()
+    {
+        //crear el deportista
+        await ProfesorService.AddAsync(nuevoProfesor);
+        //redirigir a la lista de deportistas
+        NavigationManager.NavigateTo("/profesores");
+    }
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/profesores");
+    }
+
+}

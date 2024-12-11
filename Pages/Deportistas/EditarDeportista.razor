@@ -1,0 +1,100 @@
+﻿@page "/editardeportista"
+@using ClubBlazor.Interfaces
+@using ClubBlazor.Models
+@inject GenericService<Deportista> DeportistaService
+@inject GenericService<Deporte> DeporteService
+@inject GenericService<Cuota> CuotaService
+@inject NavigationManager navigationManager
+
+<div class="background-container">
+    <img src="/Imagenes/deportistas.jpg" alt="Background" class="background-img">
+</div>
+
+<h3>Editar Deportista</h3>
+
+@if (deportista == null || deportes == null || cuotas == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <div class="form-container">
+    <EditForm Model="deportista" OnValidSubmit="ActualizarDeportista">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <InputText class="form-control" @bind-Value="deportista.Nombre" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Apellido</label>
+            <InputText class="form-control" @bind-Value="deportista.Apellido" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Teléfono</label>
+            <InputText class="form-control" @bind-Value="deportista.Telefono" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Dirección</label>
+            <InputText class="form-control" @bind-Value="deportista.Direccion" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <InputText class="form-control" @bind-Value="deportista.Email" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Deporte</label>
+            <InputSelect class="form-control" @bind-Value="deportista.DeporteId">
+                <option value="">Selecciona un deporte</option>
+                @foreach (var deporte in deportes)
+                {
+                    <option value="@deporte.Id">@deporte.Nombre</option>
+                }
+            </InputSelect>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Cuota</label>
+            <InputSelect class="form-control" @bind-Value="deportista.CuotaId">
+                <option value="">Selecciona una cuota</option>
+                @foreach (var cuota in cuotas)
+                {
+                    <option value="@cuota.Id">@cuota.Nombre</option>
+                }
+            </InputSelect>
+        </div>
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+    </EditForm>
+    </div>
+}
+
+@code {
+    [SupplyParameterFromQuery]
+    [Parameter]
+    public int IdDeportista { get; set; }  // Obtiene el ID de la URL
+    public Deportista? deportista { get; set; }
+    public List<Deporte>? deportes { get; set; }
+    public List<Cuota>? cuotas { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar los deportes y las cuotas desde los servicios
+        deportes = await DeporteService.GetAllAsync() ?? new List<Deporte>();
+        cuotas = await CuotaService.GetAllAsync() ?? new List<Cuota>();
+        deportista = await DeportistaService.GetByIdAsync(IdDeportista); // Obtener el deportista por el ID
+    }
+
+    private async Task ActualizarDeportista()
+    {
+        if (deportista != null)
+        {
+            await DeportistaService.UpdateAsync(deportista);
+            navigationManager.NavigateTo("/deportistas");
+        }
+    }
+
+    private void Cancelar()
+    {
+        navigationManager.NavigateTo("/deportistas");
+    }
+}

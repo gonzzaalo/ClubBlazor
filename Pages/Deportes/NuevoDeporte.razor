@@ -1,0 +1,110 @@
+﻿@page "/nuevodeporte"
+@using ClubBlazor.Interfaces
+@using ClubBlazor.Models
+
+@inject GenericService<Deporte> DeporteService
+@inject GenericService<Profesor> ProfesorService
+@inject NavigationManager navigationManager
+
+<div class="background-container">
+    <img src="/Imagenes/deportes.jpg" alt="Background" class="background-img">
+</div>
+
+<h3>Nuevo Deporte</h3>
+
+@if (deporte == null || profesores == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <div class="form-container">
+    <EditForm Model="deporte" OnValidSubmit="GuardarDeporte">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <InputText class="form-control" @bind-Value="deporte.Nombre" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <InputText class="form-control" @bind-Value="deporte.Descripcion" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Hora</label>
+            <InputText class="form-control" type="time" @bind-Value="horaString" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Profesor</label>
+            <InputSelect class="form-control" @bind-Value="deporte.ProfesorId">
+                <option value="">Selecciona un profesor</option>
+                @foreach (var profesor in profesores)
+                {
+                    <option value="@profesor.Id">@profesor.Nombre @profesor.Apellido</option>
+                }
+            </InputSelect>
+        </div>
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <p class="text-danger">@errorMessage</p>
+        }
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+    </EditForm>
+    </div>
+}
+
+@code {
+    public Deporte? deporte { get; set; } = new Deporte();
+    public List<Profesor>? profesores { get; set; } = new List<Profesor>();
+    private string horaString = "00:00"; // Valor inicial de la hora
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            profesores = await ProfesorService.GetAllAsync() ?? new List<Profesor>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al cargar los profesores: {ex.Message}");
+            profesores = new List<Profesor>();
+        }
+    }
+
+    private async Task GuardarDeporte()
+    {
+        if (TimeSpan.TryParse(horaString, out var hora))
+        {
+            deporte.Hora = hora;
+            errorMessage = null; // Limpiar mensaje de error si es válido
+        }
+        else
+        {
+            errorMessage = "La hora ingresada no es válida. Usa el formato HH:mm.";
+            return;
+        }
+
+        if (deporte != null)
+        {
+            try
+            {
+                await DeporteService.AddAsync(deporte);
+                navigationManager.NavigateTo("/deportes");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al guardar el deporte: {ex.Message}");
+                errorMessage = "Ocurrió un error al guardar el deporte. Inténtalo nuevamente.";
+            }
+        }
+    }
+
+    private void Cancelar()
+    {
+        deporte = new Deporte();
+        horaString = "00:00";
+        navigationManager.NavigateTo("/deportes");
+    }
+}
